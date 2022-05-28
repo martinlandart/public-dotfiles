@@ -54,14 +54,20 @@ lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 --   l = { "<cmd>Trouble loclist<cr>", "LocationList" },
 --   w = { "<cmd>Trouble workspace_diagnostics<cr>", "Wordspace Diagnostics" },
 -- }
+-- lvim.builtin.which_key.mappings["T"] = {
+--   name = "Test",
+--   f = { "<cmd>TestFile<cr>", "File" },
+--   n = { "<cmd>TestNearest<cr>", "Nearest" },
+--   s = { "<cmd>TestSuite<cr>", "Suite" },
+-- }
 
 -- Testing bindings
--- lvim.builtin.which_key.mappings["t"] = {
---   name = "Test",
---   f = { "<cmd>Ultest<cr>", "File" },
---   n = { "<cmd>UltestNearest<cr>", "Nearest" },
---   s = { "<cmd>UltestSummary<cr>", "Summary" },
--- }
+lvim.builtin.which_key.mappings["t"] = {
+  name = "Test",
+  f = { "<cmd>Ultest<cr>", "File" },
+  n = { "<cmd>UltestNearest<cr>", "Nearest" },
+  s = { "<cmd>UltestSummary<cr>", "Summary" },
+}
 
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
@@ -160,14 +166,28 @@ lvim.plugins = {
     "folke/trouble.nvim",
     cmd = "TroubleToggle",
   },
+  {
+    "rcarriga/vim-ultest",
+    cmd = { "Ultest", "UltestSummary", "UltestNearest" },
+    wants = "vim-test",
+    requires = { "vim-test/vim-test" },
+    run = ":UpdateRemotePlugins",
+    opt = true,
+    event = { "BufEnter *_test.*,*_spec.*" },
+  },
   -- {
-  --   "rcarriga/vim-ultest",
-  --   cmd = { "Ultest", "UltestSummary", "UltestNearest" },
-  --   wants = "vim-test",
-  --   requires = { "vim-test/vim-test" },
-  --   run = ":UpdateRemotePlugins",
-  --   opt = true,
-  --   event = { "BufEnter *_test.*,*_spec.*" },
+  --   "vim-test/vim-test",
+  --   cmd = { "TestNearest", "TestFile", "TestSuite", "TestLast", "TestVisit" },
+  --   keys = { "<localleader>tf", "<localleader>tn", "<localleader>ts" },
+  --   config = function()
+  --     vim.cmd [[
+  --         function! ToggleTermStrategy(cmd) abort
+  --           call luaeval("require('toggleterm').exec(_A[1])", [a:cmd])
+  --         endfunction
+  --         let g:test#custom_strategies = {'toggleterm': function('ToggleTermStrategy')}
+  --       ]]
+  --     vim.g["test#strategy"] = "toggleterm"
+  --   end,
   -- },
 }
 
