@@ -7,8 +7,6 @@ a global executable or a path to
 an executable
 ]]
 -- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
--- martin
-lvim.transparent_window = true
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
@@ -21,9 +19,9 @@ lvim.leader = "space"
 -- add your own keymapping
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 -- unmap a default keymapping
--- lvim.keys.normal_mode["<C-Up>"] = false
--- edit a default keymapping
--- lvim.keys.normal_mode["<C-q>"] = ":q<cr>"
+-- vim.keymap.del("n", "<C-Up>")
+-- override a default keymapping
+-- lvim.keys.normal_mode["<C-q>"] = ":q<cr>" -- or vim.keymap.set("n", "<C-q>", ":q<cr>" )
 
 -- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
 -- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
@@ -54,20 +52,6 @@ lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 --   l = { "<cmd>Trouble loclist<cr>", "LocationList" },
 --   w = { "<cmd>Trouble workspace_diagnostics<cr>", "Wordspace Diagnostics" },
 -- }
--- lvim.builtin.which_key.mappings["T"] = {
---   name = "Test",
---   f = { "<cmd>TestFile<cr>", "File" },
---   n = { "<cmd>TestNearest<cr>", "Nearest" },
---   s = { "<cmd>TestSuite<cr>", "Suite" },
--- }
-
--- Testing bindings
-lvim.builtin.which_key.mappings["t"] = {
-  name = "Test",
-  f = { "<cmd>Ultest<cr>", "File" },
-  n = { "<cmd>UltestNearest<cr>", "Nearest" },
-  s = { "<cmd>UltestSummary<cr>", "Summary" },
-}
 
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
@@ -76,7 +60,11 @@ lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
-lvim.builtin.nvimtree.show_icons.git = 0
+lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+
+
+-- Custom
+lvim.builtin.project.manual_mode = true
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -92,6 +80,7 @@ lvim.builtin.treesitter.ensure_installed = {
   "rust",
   "java",
   "yaml",
+  "go"
 }
 
 lvim.builtin.treesitter.ignore_install = { "haskell" }
@@ -159,39 +148,34 @@ lvim.builtin.treesitter.highlight.enabled = true
 -- }
 
 -- Additional Plugins
+-- lvim.plugins = {
+--     {"folke/tokyonight.nvim"},
+--     {
+--       "folke/trouble.nvim",
+--       cmd = "TroubleToggle",
+--     },
+-- }
+-- Disable virtual text
+lvim.lsp.diagnostics.virtual_text = true
+lvim.lsp.diagnostics.update_in_insert = true
 lvim.plugins = {
-  { "folke/tokyonight.nvim" },
   { "rmehri01/onenord.nvim" },
   {
-    "folke/trouble.nvim",
-    cmd = "TroubleToggle",
-  },
-  {
-    "rcarriga/vim-ultest",
-    cmd = { "Ultest", "UltestSummary", "UltestNearest" },
-    wants = "vim-test",
-    requires = { "vim-test/vim-test" },
-    run = ":UpdateRemotePlugins",
-    opt = true,
-    event = { "BufEnter *_test.*,*_spec.*" },
-  },
-  -- {
-  --   "vim-test/vim-test",
-  --   cmd = { "TestNearest", "TestFile", "TestSuite", "TestLast", "TestVisit" },
-  --   keys = { "<localleader>tf", "<localleader>tn", "<localleader>ts" },
-  --   config = function()
-  --     vim.cmd [[
-  --         function! ToggleTermStrategy(cmd) abort
-  --           call luaeval("require('toggleterm').exec(_A[1])", [a:cmd])
-  --         endfunction
-  --         let g:test#custom_strategies = {'toggleterm': function('ToggleTermStrategy')}
-  --       ]]
-  --     vim.g["test#strategy"] = "toggleterm"
-  --   end,
-  -- },
+    "ray-x/lsp_signature.nvim",
+    config = function() require "lsp_signature".on_attach() end,
+    event = "BufRead"
+  }
 }
-
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
--- lvim.autocommands.custom_groups = {
---   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
--- }
+-- vim.api.nvim_create_autocmd("bufenter", {
+--   pattern = { "*.json", "*.jsonc" },
+--   -- enable wrap mode for json files only
+--   command = "setlocal wrap",
+-- })
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = "zsh",
+--   callback = function()
+--     -- let treesitter use bash highlight for zsh files as well
+--     require("nvim-treesitter.highlight").attach(0, "bash")
+--   end,
+-- })
