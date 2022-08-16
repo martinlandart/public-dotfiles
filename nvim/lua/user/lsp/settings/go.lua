@@ -1,77 +1,5 @@
-local status_ok, lsp_installer = pcall(require, "nvim-lsp-installer")
-if not status_ok then
-	return
-end
-
-local servers = {
-	"sumneko_lua",
-	"cssls",
-	"html",
-	"tsserver",
-	"pyright",
-	"bashls",
-	"jsonls",
-	"yamlls",
-	"gopls",
-	"golangci_lint_ls",
-	"rust_analyzer",
-	"taplo",
-}
-
-lsp_installer.setup()
-
-local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
-if not lspconfig_status_ok then
-	return
-end
-
-local opts = {}
-
-for _, server in pairs(servers) do
-	opts = {
-		on_attach = require("user.lsp.handlers").on_attach,
-		capabilities = require("user.lsp.handlers").capabilities,
-	}
-
-	if server == "sumneko_lua" then
-		local sumneko_opts = require("user.lsp.settings.sumneko_lua")
-		opts = vim.tbl_deep_extend("force", sumneko_opts, opts)
-	end
-
-	if server == "pyright" then
-		local pyright_opts = require("user.lsp.settings.pyright")
-		opts = vim.tbl_deep_extend("force", pyright_opts, opts)
-	end
-
-	if server == "rust_analyzer" then
-		require("rust-tools").setup({
-			tools = {
-				on_initialized = function()
-					vim.cmd([[
-            autocmd BufEnter,CursorHold,InsertLeave,BufWritePost *.rs silent! lua vim.lsp.codelens.refresh()
-          ]])
-				end,
-			},
-			server = {
-				on_attach = require("user.lsp.handlers").on_attach,
-				capabilities = require("user.lsp.handlers").capabilities,
-				settings = {
-					["rust-analyzer"] = {
-						lens = {
-							enable = true,
-						},
-						checkOnSave = {
-							command = "clippy",
-						},
-					},
-				},
-			},
-		})
-	end
-
-	if server == "gopls" then
-		-- local go_opts = require("user.lsp.settings.go")
-		-- opts = vim.tbl_deep_extend("force", go_opts, opts)
+return {
+	settings = {
 		-- NOTE: all LSP and formatting related options are disabeld.
 		-- NOTE: LSP is handled by lsp.lua and formatting is handled by null-ls.lua
 		-- NOTE: via `lsp_on_attach` the custom callback used by all other LSPs is called
@@ -92,8 +20,8 @@ for _, server in pairs(servers) do
 			-- if lsp_cfg is a table, merge table with with non-default gopls setup in go/lsp.lua, e.g.
 			--   lsp_cfg = {settings={gopls={matcher='CaseInsensitive', ['local'] = 'your_local_module_path', gofumpt = true }}}
 			lsp_gofumpt = false, -- true: set default gofmt in gopls format to gofumpt
-			lsp_on_attach = function(_, _)
-				-- require("functions").custom_lsp_attach(client, bufnr)
+			lsp_on_attach = function(client, bufnr)
+				require("functions").custom_lsp_attach(client, bufnr)
 				local wk = require("which-key")
 				local default_options = { silent = true }
 				wk.register({
@@ -144,7 +72,7 @@ for _, server in pairs(servers) do
 			lsp_codelens = true, -- set to false to disable codelens, true by default
 			lsp_keymaps = false, -- set to false to disable gopls/lsp keymap
 			lsp_diag_hdlr = true, -- hook lsp diag handler
-			lsp_diag_virtual_text = { space = 0, prefix = "" }, -- virtual text setup
+			lsp_diag_virtual_text = { space = 0, prefix = "", highlight = "Comment" }, -- virtual text setup
 			lsp_diag_signs = true,
 			lsp_diag_update_in_insert = true,
 			lsp_document_formatting = false,
@@ -193,10 +121,6 @@ for _, server in pairs(servers) do
 			run_in_floaterm = false, -- set to true to run in float window.
 			-- float term recommended if you use richgo/ginkgo with terminal color
 			luasnip = true,
-		})
-	end
-
-	if server ~= "gopls" and server ~= "rust_analyzer" then
-		lspconfig[server].setup(opts)
-	end
-end
+		}),
+	},
+}
