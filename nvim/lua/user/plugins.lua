@@ -77,6 +77,16 @@ return packer.startup(function(use)
 	-- Colorschemes
 	use({ "folke/tokyonight.nvim", commit = "8223c970677e4d88c9b6b6d81bda23daf11062bb" })
 	use({ "lunarvim/darkplus.nvim", commit = "2584cdeefc078351a79073322eb7f14d7fbb1835" })
+	use({ "cocopon/iceberg.vim", commit = "61efc9c61dec54076c093af0cff304e30b0c3a07" })
+	use({
+		"mcchrish/zenbones.nvim",
+		-- Optionally install Lush. Allows for more configuration or extending the colorscheme
+		-- If you don't want to install lush, make sure to set g:zenbones_compat = 1
+		-- In Vim, compat mode is turned on as Lush only works in Neovim.
+		requires = "rktjmp/lush.nvim",
+	})
+	use({ "shaunsingh/nord.nvim", commit = "6bfb0f7d6e4faf7cddedd34489efe2d2f586325c" })
+	use({ "wuelnerdotexe/vim-enfocado", commit = "dc1fb4e4c07415f4007183af9f8d241f8d5ca17e" })
 
 	-- cmp plugins
 	use({ "hrsh7th/nvim-cmp", commit = "df6734aa018d6feb4d76ba6bda94b1aeac2b378a" }) -- The completion plugin
@@ -96,17 +106,36 @@ return packer.startup(function(use)
 	use({ "jose-elias-alvarez/null-ls.nvim", commit = "ff40739e5be6581899b43385997e39eecdbf9465" }) -- for formatters and linters
 	use({ "RRethy/vim-illuminate", commit = "c82e6d04f27a41d7fdcad9be0bce5bb59fcb78e5" })
 	use({ "simrat39/rust-tools.nvim", commit = "11dcd674781ba68a951ab4c7b740553cae8fe671" })
-	-- use({ "ray-x/go.nvim", commit = "c75824b1f050c153ebfd5be65a318b9d4463d5a9" })
-	-- use({ "ray-x/guihua.lua", commit = "bf4fc0386f6cb26d9080cb642681172d00100af8" })
-	use({ "ray-x/go.nvim", requires = "ray-x/guihua.lua" })
+	use({
+		"nvim-neotest/neotest",
+		requires = {
+			"nvim-lua/plenary.nvim",
+			"nvim-treesitter/nvim-treesitter",
+			"antoinemadec/FixCursorHold.nvim",
+			"nvim-neotest/neotest-go",
+		},
+		config = function()
+			require("neotest").setup({
+				adapters = {
+					require("neotest-go"),
+				},
+				args = { "-count=1", "-timeout=60s" },
+			})
+		end,
+		as = "neotest",
+	})
 
 	-- Telescope
-	use({ "nvim-telescope/telescope.nvim", commit = "d96eaa914aab6cfc4adccb34af421bdd496468b0" })
+	use({ "nvim-telescope/telescope.nvim", commit = "b923665e64380e97294af09117e50266c20c71c7" })
 
 	-- Treesitter
 	use({
 		"nvim-treesitter/nvim-treesitter",
 		commit = "518e27589c0463af15463c9d675c65e464efc2fe",
+	})
+	use({
+		use("nvim-treesitter/nvim-treesitter-context"),
+		commit = "1f66894d7bc5c96d0efe18f893c5f1f5ef771cad",
 	})
 
 	-- Git

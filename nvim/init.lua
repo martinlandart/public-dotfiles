@@ -1,3 +1,4 @@
+vim.opt.shell = "/bin/bash"
 require("user.options")
 require("user.keymaps")
 require("user.whichkey")

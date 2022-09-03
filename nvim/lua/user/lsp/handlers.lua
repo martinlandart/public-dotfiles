@@ -9,12 +9,12 @@ M.capabilities = vim.lsp.protocol.make_client_capabilities()
 M.capabilities.textDocument.completion.completionItem.snippetSupport = true
 M.capabilities = cmp_nvim_lsp.update_capabilities(M.capabilities)
 
-local function setCodeLensHighlight(highlight)
-	vim.api.nvim_set_hl(0, "LspCodeLens", { link = highlight })
-	vim.api.nvim_set_hl(0, "LspCodeLensText", { link = highlight })
-	vim.api.nvim_set_hl(0, "LspCodeLensSign", { link = highlight })
-	vim.api.nvim_set_hl(0, "LspCodeLensSeparator", { link = "Boolean" })
-end
+-- local function setCodeLensHighlight(highlight)
+-- 	vim.api.nvim_set_hl(0, "LspCodeLens", { link = highlight })
+-- 	vim.api.nvim_set_hl(0, "LspCodeLensText", { link = highlight })
+-- 	vim.api.nvim_set_hl(0, "LspCodeLensSign", { link = highlight })
+-- 	vim.api.nvim_set_hl(0, "LspCodeLensSeparator", { link = "Boolean" })
+-- end
 
 M.setup = function()
 	local signs = {
@@ -57,7 +57,7 @@ M.setup = function()
 		border = "rounded",
 	})
 
-	setCodeLensHighlight("Comment")
+	-- setCodeLensHighlight("Comment")
 end
 
 local function lsp_keymaps(bufnr)
@@ -68,6 +68,7 @@ local function lsp_keymaps(bufnr)
 	keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
 	keymap(bufnr, "n", "gI", "<cmd>Telescope lsp_implementations<CR>", opts)
 	keymap(bufnr, "n", "gr", "<cmd>Telescope lsp_references<CR>", opts)
+	keymap(bufnr, "n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts)
 	keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
 	keymap(bufnr, "n", "<leader>lf", "<cmd>lua vim.lsp.buf.formatting()<cr>", opts)
 	keymap(bufnr, "n", "<leader>li", "<cmd>LspInfo<cr>", opts)
@@ -78,6 +79,30 @@ local function lsp_keymaps(bufnr)
 	keymap(bufnr, "n", "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
 	keymap(bufnr, "n", "<leader>ls", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
 	keymap(bufnr, "n", "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
+
+	local status_ok, wk = pcall(require, "which-key")
+	if not status_ok then
+		return
+	end
+	local wkopts = {
+		mode = "n", -- NORMAL mode
+		prefix = "<leader>t",
+		buffer = bufnr,
+		silent = true, -- use `silent` when creating keymaps
+		noremap = true, -- use `noremap` when creating keymaps
+		nowait = true, -- use `nowait` when creating keymaps
+	}
+
+	local mappings = {
+		t = { "<cmd>lua require('neotest').run.run(vim.fn.getcwd())<cr>", "Test Suite" },
+		f = { "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>", "Test File" },
+		n = { "<cmd>lua require('neotest').run.run()<cr>", "Test Nearest" },
+		e = { "<cmd>lua require('neotest').summary.toggle()<cr>", "Summary" },
+		j = { "<cmd>lua require('neotest').jump.next({ status = 'failed' })<cr>", "Jump to Next" },
+		k = { "<cmd>lua require('neotest').jump.prev({ status = 'failed' })<cr>", "Jump to Previous" },
+	}
+
+	wk.register(mappings, wkopts)
 end
 
 M.lsp_keymaps = function(bufnr)
