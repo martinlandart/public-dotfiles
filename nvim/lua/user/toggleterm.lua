@@ -3,6 +3,26 @@ if not status_ok then
 	return
 end
 
+local prefered_shell_order = {
+	"fish",
+	"zsh",
+	"bash",
+}
+
+local function get_shell()
+	local function is_executable(cmd)
+		if vim.fn.executable(cmd) == 1 then
+			return cmd
+		end
+	end
+
+	for _, shell in ipairs(prefered_shell_order) do
+		if is_executable(shell) then
+			return shell
+		end
+	end
+end
+
 toggleterm.setup({
 	size = 20,
 	open_mapping = [[<c-t>]],
@@ -14,7 +34,7 @@ toggleterm.setup({
 	persist_size = true,
 	direction = "float",
 	close_on_exit = true,
-	shell = "fish",
+	shell = get_shell(),
 	float_opts = {
 		border = "curved",
 	},
