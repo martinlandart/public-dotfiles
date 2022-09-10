@@ -75,7 +75,7 @@ return packer.startup(function(use)
 	})
 
 	-- Colorschemes
-	use({ "folke/tokyonight.nvim", commit = "8223c970677e4d88c9b6b6d81bda23daf11062bb" })
+	use({ "folke/tokyonight.nvim", commit = "54cf70dbd19acd7c32cc12bb743fec17eaf6fef5" })
 	use({ "lunarvim/darkplus.nvim", commit = "2584cdeefc078351a79073322eb7f14d7fbb1835" })
 	use({ "cocopon/iceberg.vim", commit = "61efc9c61dec54076c093af0cff304e30b0c3a07" })
 	use({
