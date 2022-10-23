@@ -9,5 +9,7 @@ alias fishconf='nvim ~/.config/fish/config.fish'
 alias nvimconf='nvim ~/.config/nvim/'
 alias kittyconf='nvim ~/.config/kitty/kitty.conf'
 
+alias s="kitty +kitten ssh"
+
 # misc
 alias reload='exec fish'
