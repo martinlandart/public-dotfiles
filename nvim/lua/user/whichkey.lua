@@ -22,7 +22,7 @@ local vopts = {
 }
 
 local vmappings = {
-	["/"] = { "<ESC><CMD>lua require('Comment.api').toggle_linewise_op(vim.fn.visualmode())<CR>", "Comment" },
+	["/"] = { "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", "Comment" },
 }
 
 local mappings = {
@@ -39,7 +39,7 @@ local mappings = {
 		t = { "<cmd>lua require'dap'.terminate()<cr>", "Terminate" },
 	},
 	["f"] = { "<cmd>Telescope find_files<cr>", "Find File" },
-	["/"] = { "<cmd>lua require('Comment.api').toggle_current_linewise()<CR>", "Comment" },
+	["/"] = { "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", "Comment" },
 	e = { ":NvimTreeToggle<CR>", "NvimTree" },
 	w = { "<cmd>w!<CR>", "Save" },
 	h = { "<cmd>nohlsearch<CR>", "Clear highlights" },
