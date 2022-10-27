@@ -85,6 +85,16 @@ return packer.startup(function(use)
 		end,
 	})
 
+	use({
+		"petertriho/nvim-scrollbar",
+		as = "nvim-scrollbar",
+		-- requires = { "kevinhwang91/nvim-hlslens" },
+		config = function()
+			require("scrollbar").setup()
+			-- require("scrollbar.handlers.search").setup()
+		end,
+	})
+
 	-- Colorschemes
 	use({
 		"catppuccin/nvim",
